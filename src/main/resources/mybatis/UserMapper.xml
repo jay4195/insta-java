@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jay.instagram.dao.UserMapper">
+    <!--    public Account getAcct(Long id); -->
+    <insert id = "addUser" useGeneratedKeys="true" keyProperty="id" >
+        insert into user(`username`,`password`,`fullname`,`email`,`createdAt`)
+                    values (#{username}, #{password},#{fullname},#{email}, #{createdAt})
+    </insert>
+    <select id = "getUserByEmail" resultType="com.jay.instagram.bean.User" >
+        select * from user where email = #{email}
+    </select>
+    <select id = "getUserByUsername" resultType="com.jay.instagram.bean.User" >
+        select * from user where username = #{userName}
+    </select>
+    <update id = "updateUser" >
+        update user set username = #{username}, fullname = #{fullname}, avatar = #{avatar},
+                        website = #{website}, bio = #{bio}
+                        where email = #{email}
+    </update>
+    <select id = "getRecentUsers" resultType="com.jay.instagram.bean.User" >
+        select * from user order by createdAt desc limit 10
+    </select>
+</mapper>

@@ -1,5 +1,6 @@
 package com.jay.instagram.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jay.instagram.bean.Post;
 import com.jay.instagram.bean.UserSchema;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +28,11 @@ public class PostController {
         return retPost;
     }
 
-//    /**
-//     * @param id post id
-//     * @return {"data" : UserSchema}
-//     */
-//    @RequestMapping(value = "/{id}/comments",
-//            method = RequestMethod.GET)
-//    @ResponseBody
-//    public String getCommentInfo(@PathVariable("id") String id) {
-//        return "1";
-//    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
+    public String createPost(@RequestBody JSONObject jsonObject) {
+        System.out.println(jsonObject);
+        return "1";
+    }
 }
