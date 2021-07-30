@@ -55,13 +55,15 @@ public class UserController {
         }
         UserSchema userSchema = new UserSchema(user);
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
-//        log.info("Email: " + tokenUserEmail);
         if (tokenUserEmail.equals(user.getEmail())) {
             userSchema.setMe(true);
         } else {
             userSchema.setMe(false);
         }
         userSchema.setAvatar(fileService.getPictureUrl(user.getAvatar()));
+        List<Post> posts = postService.getPostByUid(user.getId());
+        userSchema.setPosts(posts);
+        userSchema.setPostCount((long) posts.size());
         retJsonObj.put("data", userSchema);
         return retJsonObj;
     }
@@ -72,9 +74,19 @@ public class UserController {
     @RequestMapping(value = "/feed",
             method = RequestMethod.GET)
     @ResponseBody
-    public JSONObject feed() {
+    public JSONObject feed(HttpServletRequest httpServletRequest) {
         JSONObject retJsonObj = new JSONObject();
-        retJsonObj.put("data", postService.getRandomPosts());
+        log.info(postService.getRandomPosts().toString());
+        List<Post> posts = postService.getRandomPosts();
+        String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        for (Post post : posts) {
+            if (post.getUser().getEmail().equals(tokenUserEmail)) {
+                post.setMine(true);
+            } else {
+                post.setMine(false);
+            }
+        }
+        retJsonObj.put("data", posts);
         return retJsonObj;
     }
 

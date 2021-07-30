@@ -1,6 +1,6 @@
 instagram:
   server:
-    serverDirPath: D:\\IDEA-workspace\\Data\\
+    serverDirPath: D:\IDEA-workspace\Data\
     imgSrcPath: http://localhost:8080/upload/
 
 server:

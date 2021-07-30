@@ -10,4 +10,5 @@ public interface FileService {
     byte[] getUploadPicture(String fileName);
     String getPictureUrl(String fileName);
     String getPictureFileName(String pictureUrl);
+    boolean deletePicture(String fileName);
 }

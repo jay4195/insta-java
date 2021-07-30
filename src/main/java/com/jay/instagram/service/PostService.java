@@ -8,4 +8,8 @@ public interface PostService {
     void createPost(Post post);
     Post getPost(Long postId);
     List<Post> getRandomPosts();
+    List<Post> getPostByUid(Long uid);
+    Long getPostNumbers(Long uid);
+
+    void deletePost(Long postId);
 }

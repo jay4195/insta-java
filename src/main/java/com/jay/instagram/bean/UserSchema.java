@@ -12,19 +12,20 @@ import java.util.List;
 public class UserSchema {
     @JsonProperty("isMe")
     private boolean isMe = true;
-    private String fullname = "Zhiyuan Wang";
-    private String username = "jay4195";
-    private String email = "jay4195@qq.com";
+    private String fullname = "default name";
+    private String username = "default username";
+    private String email = "sample@email.com";
     private String password = "123456";
     private String avatar;
     private String bio = "No bios";
-    private String website = "https://github.com/jay4195";
+    private String website = "unknown";
     private List<UserSchema> followers = new LinkedList<>();
     private List<Post> posts = new LinkedList<>();
-    private int followersCount = 10;
-    private int followingCount = 9;
-    private int postCount = 8;
-    private Date createdAt = new Date();
+    private List<Post> savedPosts = new LinkedList<>();
+    private Long followersCount = 0L;
+    private Long followingCount = 0L;
+    private Long postCount = 0L;
+    private Date createdAt ;
     public UserSchema() {
         this.posts.add(new Post());
     }

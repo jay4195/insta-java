@@ -70,4 +70,33 @@ public class PostServiceImpl implements PostService {
         }
         return posts;
     }
+
+    @Override
+    public List<Post> getPostByUid(Long uid) {
+        List<Long> postIds = postMapper.getPostByUid(uid);
+        List<Post> posts = new LinkedList<>();
+        for (Long postId : postIds) {
+            posts.add(getPost(postId));
+        }
+        return posts;
+    }
+
+    @Override
+    public Long getPostNumbers(Long uid) {
+        return postMapper.getPostNumbers(uid);
+    }
+
+    @Override
+    public void deletePost(Long postId) {
+        List<String> fileNames = postMapper.getPostImages(postId);
+        int totalNum = fileNames.size();
+        int deletedNum = 0;
+        for (String file : fileNames) {
+            if (fileService.deletePicture(file)) {
+                deletedNum++;
+            }
+        }
+        log.info("deleted: {} total: {}", deletedNum, totalNum);
+        postMapper.deletePost(postId);
+    }
 }

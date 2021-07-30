@@ -36,4 +36,13 @@
     <select id="getRandomPosts" resultType="Long">
         select id from post order by RAND() LIMIT 10
     </select>
+    <select id="getPostNumbers" resultType="Long">
+        select count(*) from post where uid = #{uid}
+    </select>
+    <select id = "getPostByUid" resultType = "Long" >
+        select id from post where uid = #{uid} order by createdAt desc
+    </select>
+    <delete id="deletePost">
+        delete from post where id = #{id}
+    </delete>
 </mapper>

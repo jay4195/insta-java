@@ -37,6 +37,7 @@ public class FileServiceImpl implements FileService {
             File file = new File(uploadPath, filename);
             FileUtils.copyInputStreamToFile(inputStream, file);
 //            log.info(uploadPath);
+            inputStream.close();
             return filename;
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -58,6 +59,7 @@ public class FileServiceImpl implements FileService {
             FileInputStream inputStream = new FileInputStream(file);
             bytes = new byte[inputStream.available()];
             inputStream.read(bytes, 0, inputStream.available());
+            inputStream.close();
         } catch (Exception e) {
             log.error(e.getMessage());
             bytes = new byte[0];
@@ -78,6 +80,22 @@ public class FileServiceImpl implements FileService {
     public String getPictureFileName(String pictureUrl) {
         String fileName = pictureUrl.substring(pictureUrl.lastIndexOf("/") + 1);
         return fileName;
+    }
+
+    @Override
+    public boolean deletePicture(String fileName) {
+        String filePath = serverConfig.getServerDirPath() + "upload" + File.separator + hashFolder(fileName) + File.separator + fileName;
+        File file = new File(filePath);
+        if (file.exists()) {
+            if (file.delete()) {
+                log.info("File {} deleted!", filePath);
+                return true;
+            }
+            log.error("File {} not deleted!", filePath);
+            return false;
+        }
+        log.error("No such file {}!", filePath);
+        return false;
     }
 
     /**

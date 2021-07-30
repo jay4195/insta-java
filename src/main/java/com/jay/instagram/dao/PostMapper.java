@@ -12,7 +12,10 @@ public interface PostMapper {
     void addPostTags(Long postId, String hashTag);
 
     List<Long> getRandomPosts();
+    List<Long> getPostByUid(Long uid);
     Post getPost(Long postId);
     List<String> getPostImages(Long postId);
     List<String> getPostTags(Long postId);
+    Long getPostNumbers(Long uid);
+    void deletePost(Long id);
 }
