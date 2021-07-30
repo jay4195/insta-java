@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface UserService {
     void addUser(User user);
+    User getUserById(Long id);
     User getUserByEmail(String email);
     User getUserByUsername(String userName);
     boolean updateUser(User user);

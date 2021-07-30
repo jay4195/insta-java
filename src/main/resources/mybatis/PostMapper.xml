@@ -2,24 +2,38 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jay.instagram.dao.UserMapper">
+<mapper namespace="com.jay.instagram.dao.PostMapper">
     <!--    public Account getAcct(Long id); -->
-    <insert id = "addUser" useGeneratedKeys="true" keyProperty="id" >
-        insert into user(`username`,`password`,`fullname`,`email`,`createdAt`)
-                    values (#{username}, #{password},#{fullname},#{email}, #{createdAt})
+    <insert id = "addPost" useGeneratedKeys="true" keyProperty="id" >
+        insert into post(`uid`,`caption`,`likes_count`,`comments_count`,`createdAt`)
+                    values (#{user.id}, #{caption},#{likesCount},#{commentsCount}, #{createdAt});
     </insert>
-    <select id = "getUserByEmail" resultType="com.jay.instagram.bean.User" >
-        select * from user where email = #{email}
+    <insert id = "addPostImages" >
+        insert into post_images(`post_id`,`image_url`)
+                    values (#{postId}, #{imageUrl});
+    </insert>
+    <insert id = "addPostTags" >
+        insert into post_tags(`post_id`,`hashtag`)
+        values (#{postId}, #{hashTag});
+    </insert>
+    <resultMap id="PostMap" type="com.jay.instagram.bean.Post">
+        <result column="id" property="id" />
+        <result column="uid" property="user.id"/>
+        <result column="caption" property="caption"/>
+        <result column="likes_count" property="likesCount"/>
+        <result column="comments_count" property="commentsCount"/>
+        <result column="createdAt" property="createdAt"/>
+    </resultMap>
+    <select id = "getPost" resultMap = "PostMap" >
+        select * from post where id = #{postId}
     </select>
-    <select id = "getUserByUsername" resultType="com.jay.instagram.bean.User" >
-        select * from user where username = #{userName}
+    <select id="getPostImages" resultType="string">
+        select image_url from post_images where post_id = #{postId}
     </select>
-    <update id = "updateUser" >
-        update user set username = #{username}, fullname = #{fullname}, avatar = #{avatar},
-                        website = #{website}, bio = #{bio}
-                        where email = #{email}
-    </update>
-    <select id = "getRecentUsers" resultType="com.jay.instagram.bean.User" >
-        select * from user order by createdAt desc limit 10
+    <select id="getPostTags" resultType="string">
+        select hashtag from post_tags where post_id = #{postId}
+    </select>
+    <select id="getRandomPosts" resultType="Long">
+        select id from post order by RAND() LIMIT 10
     </select>
 </mapper>

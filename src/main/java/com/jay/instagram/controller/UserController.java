@@ -7,6 +7,7 @@ import com.jay.instagram.bean.User;
 import com.jay.instagram.bean.UserSchema;
 import com.jay.instagram.config.ServerConfig;
 import com.jay.instagram.service.FileService;
+import com.jay.instagram.service.PostService;
 import com.jay.instagram.service.TokenService;
 import com.jay.instagram.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,8 @@ public class UserController {
     FileService fileService;
     @Autowired
     TokenService tokenService;
+    @Autowired
+    PostService postService;
     /**
      * @param username 用户id
      * @return {"data" : UserSchema}
@@ -71,9 +74,7 @@ public class UserController {
     @ResponseBody
     public JSONObject feed() {
         JSONObject retJsonObj = new JSONObject();
-        List<Post> noFeedList = new LinkedList<>();
-        noFeedList.add(new Post());
-        retJsonObj.put("data", noFeedList);
+        retJsonObj.put("data", postService.getRandomPosts());
         return retJsonObj;
     }
 

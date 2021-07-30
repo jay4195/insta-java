@@ -8,6 +8,9 @@
         insert into user(`username`,`password`,`fullname`,`email`,`createdAt`)
                     values (#{username}, #{password},#{fullname},#{email}, #{createdAt})
     </insert>
+    <select id = "getUserById" resultType="com.jay.instagram.bean.User" >
+        select * from user where id = #{id}
+    </select>
     <select id = "getUserByEmail" resultType="com.jay.instagram.bean.User" >
         select * from user where email = #{email}
     </select>
@@ -20,6 +23,6 @@
                         where email = #{email}
     </update>
     <select id = "getRecentUsers" resultType="com.jay.instagram.bean.User" >
-        select * from user order by createdAt desc limit 10
+        select * from user order by RAND() LIMIT 10
     </select>
 </mapper>
