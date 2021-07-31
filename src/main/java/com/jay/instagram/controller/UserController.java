@@ -108,7 +108,6 @@ public class UserController {
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     public JSONObject editProfile(@Valid @RequestBody User user, HttpServletResponse response) {
-        System.out.println(user);
         JSONObject reponseJson = new JSONObject();
         user.setAvatar(fileService.getPictureFileName(user.getAvatar()));
         User checkUserByName = userService.getUserByUsername(user.getUsername());

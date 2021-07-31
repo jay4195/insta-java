@@ -1,6 +1,7 @@
 package com.jay.instagram.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jay.instagram.bean.Comment;
 import com.jay.instagram.bean.Post;
 import com.jay.instagram.bean.User;
 import com.jay.instagram.service.FileService;
@@ -66,11 +67,18 @@ public class PostController {
     }
 
     @RequestMapping(value = "/avatar/{fileName}",
-                    method = RequestMethod.DELETE)
+            method = RequestMethod.DELETE)
     public void deleteAvatar(@PathVariable String fileName) {
         log.info("Delete avatar {}", fileName);
         fileService.deletePicture(fileName);
     }
+
+    @RequestMapping(
+            method = RequestMethod.GET)
+    public String explore() {
+        return "redirect:/users/feed";
+    }
+
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
@@ -84,6 +92,28 @@ public class PostController {
         post.setCreatedAt(new Date());
         JSONObject responseJson = new JSONObject();
         postService.createPost(post);
+        responseJson.put("data", post);
+        return responseJson;
+    }
+
+    @RequestMapping(value = "/{id}/comments", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject postComments(@PathVariable(value = "id") Long postId,
+                               @RequestBody JSONObject commentJson, HttpServletRequest httpServletRequest) {
+        JSONObject responseJson = new JSONObject();
+        String text = (String) commentJson.get("text");
+        String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        User user = userService.getUserByEmail(tokenUserEmail);
+        Comment comment = new Comment();
+        comment.setPostId(postId);
+        comment.setUid(user.getId());
+        comment.setComment(text);
+        comment.setCreatedAt(new Date());
+        postService.addPostComment(comment);
+        log.info("[Comment] User: {} Text: {}", user.getUsername(), text);
+        Post post = postService.getPost(postId);
+        user.setAvatar(fileService.getPictureUrl(user.getAvatar()));
+        post.setUser(user);
         responseJson.put("data", post);
         return responseJson;
     }

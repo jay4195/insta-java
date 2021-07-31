@@ -1,5 +1,6 @@
 package com.jay.instagram.service;
 
+import com.jay.instagram.bean.Comment;
 import com.jay.instagram.bean.Post;
 
 import java.util.List;
@@ -9,7 +10,7 @@ public interface PostService {
     Post getPost(Long postId);
     List<Post> getRandomPosts();
     List<Post> getPostByUid(Long uid);
-    Long getPostNumbers(Long uid);
 
     void deletePost(Long postId);
+    void addPostComment(Comment comment);
 }

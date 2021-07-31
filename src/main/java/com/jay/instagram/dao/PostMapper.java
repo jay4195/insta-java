@@ -1,5 +1,6 @@
 package com.jay.instagram.dao;
 
+import com.jay.instagram.bean.Comment;
 import com.jay.instagram.bean.Post;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,4 +19,7 @@ public interface PostMapper {
     List<String> getPostTags(Long postId);
     Long getPostNumbers(Long uid);
     void deletePost(Long id);
+
+    void addPostComment(Comment comment);
+    List<Comment> getPostComments(Long postId);
 }

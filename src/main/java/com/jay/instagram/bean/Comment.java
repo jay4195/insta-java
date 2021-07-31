@@ -8,9 +8,11 @@ import java.util.Date;
 
 @Data
 public class Comment {
+    private Long postId;
+    private Long uid;
     @JsonProperty("user")
-    private UserSchema userSchema;
-    private Post post;
-    private String text = "great";
-    private Date date = new Date();
+    private User user;
+    @JsonProperty("text")
+    private String comment;
+    private Date createdAt;
 }

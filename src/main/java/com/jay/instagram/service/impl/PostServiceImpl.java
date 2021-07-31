@@ -1,5 +1,6 @@
 package com.jay.instagram.service.impl;
 
+import com.jay.instagram.bean.Comment;
 import com.jay.instagram.bean.Post;
 import com.jay.instagram.bean.User;
 import com.jay.instagram.dao.PostMapper;
@@ -11,8 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -56,6 +56,20 @@ public class PostServiceImpl implements PostService {
         for (String name : imageNames) {
             imageUrls.add(fileService.getPictureUrl(name));
         }
+        List<Comment> comments = getPostComments(postId);
+        Map<Long, User> commentUserMap = new HashMap<>();
+        for (Comment cmt : comments) {
+            User whoMakeComment;
+            if (!commentUserMap.containsKey(cmt.getUid())) {
+                whoMakeComment = userService.getUserById(cmt.getUid());
+                whoMakeComment.setAvatar(fileService.getPictureUrl(whoMakeComment.getAvatar()));
+                commentUserMap.put(cmt.getUid(), whoMakeComment);
+            } else {
+                whoMakeComment = commentUserMap.get(cmt.getUid());
+            }
+            cmt.setUser(whoMakeComment);
+        }
+        post.setComments(comments);
         post.setFiles(imageUrls);
         post.setTags(postMapper.getPostTags(postId));
         return post;
@@ -82,11 +96,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Long getPostNumbers(Long uid) {
-        return postMapper.getPostNumbers(uid);
-    }
-
-    @Override
     public void deletePost(Long postId) {
         List<String> fileNames = postMapper.getPostImages(postId);
         int totalNum = fileNames.size();
@@ -98,5 +107,18 @@ public class PostServiceImpl implements PostService {
         }
         log.info("deleted: {} total: {}", deletedNum, totalNum);
         postMapper.deletePost(postId);
+    }
+
+    @Override
+    public void addPostComment(Comment comment) {
+        postMapper.addPostComment(comment);
+    }
+
+    public List<Comment> getPostComments(Long postId) {
+        return postMapper.getPostComments(postId);
+    }
+
+    public Long getPostNumbers(Long uid) {
+        return postMapper.getPostNumbers(uid);
     }
 }
