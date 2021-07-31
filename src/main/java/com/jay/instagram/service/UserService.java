@@ -11,4 +11,11 @@ public interface UserService {
     User getUserByUsername(String userName);
     boolean updateUser(User user);
     List<User> feedUser();
+
+    void followUser(Long uid, Long followerId);
+    void unFollowUser(Long uid, Long followerId);
+    boolean followStatus(Long uid, Long followerId);
+
+    List<User> getFollowers(Long uid);
+    List<User> getFollowingUsers(Long uid);
 }

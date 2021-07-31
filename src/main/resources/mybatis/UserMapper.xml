@@ -25,4 +25,20 @@
     <select id = "getRecentUsers" resultType="com.jay.instagram.bean.User" >
         select * from user order by RAND() LIMIT 10
     </select>
+
+    <insert id = "follow">
+        insert into user_follow(`uid`,`follower_uid`) values (#{userId}, #{followerId});
+    </insert>
+    <delete id = "unFollow">
+        delete from user_follow where uid = #{userId} and follower_uid = #{followerId};
+    </delete>
+    <select id = "findFollow" resultType="Long" >
+        select count(*) from user_follow where uid = #{userId} and follower_uid = #{followerId};
+    </select>
+    <select id = "findFollowers" resultType="Long" >
+        select follower_uid from user_follow where uid = #{userId};
+    </select>
+    <select id = "findFollowingUsers" resultType="Long" >
+        select uid from user_follow where follower_uid = #{userId};
+    </select>
 </mapper>

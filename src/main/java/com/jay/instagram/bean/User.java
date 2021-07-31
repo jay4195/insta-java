@@ -1,5 +1,6 @@
 package com.jay.instagram.bean;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+    @JsonProperty("_id")
     private Long id;
 
     //@Length(max = 75, message = "avatar should less than 50")

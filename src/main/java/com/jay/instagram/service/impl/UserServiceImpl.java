@@ -2,12 +2,14 @@ package com.jay.instagram.service.impl;
 
 import com.jay.instagram.bean.User;
 import com.jay.instagram.dao.UserMapper;
+import com.jay.instagram.service.FileService;
 import com.jay.instagram.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -15,6 +17,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    FileService fileService;
 
     @Override
     public void addUser(User user) {
@@ -44,5 +48,50 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> feedUser() {
         return userMapper.getRecentUsers();
+    }
+
+    @Override
+    public boolean followStatus(Long uid, Long followerId) {
+        return userMapper.findFollow(uid, followerId) > 0;
+    }
+
+    @Override
+    public void followUser(Long uid, Long followerId) {
+        if(!followStatus(uid, followerId)) {
+            userMapper.follow(uid, followerId);
+            log.info("[Follow] {} follow {}", followerId, uid);
+        }
+    }
+
+    @Override
+    public void unFollowUser(Long uid, Long followerId) {
+        if(followStatus(uid, followerId)) {
+            userMapper.unFollow(uid, followerId);
+            log.info("[unFollow] {} follow {}", followerId, uid);
+        }
+    }
+
+    @Override
+    public List<User> getFollowers(Long uid) {
+        List<Long> followerList = userMapper.findFollowers(uid);
+        List<User> followers = new LinkedList<>();
+        for (Long id : followerList) {
+            User tempUser = userMapper.getUserById(id);
+            tempUser.setAvatar(fileService.getPictureUrl(tempUser.getAvatar()));
+            followers.add(tempUser);
+        }
+        return followers;
+    }
+
+    @Override
+    public List<User> getFollowingUsers(Long uid) {
+        List<Long> followingList = userMapper.findFollowingUsers(uid);
+        List<User> followingUsers = new LinkedList<>();
+        for (Long id : followingList) {
+            User tempUser = userMapper.getUserById(id);
+            tempUser.setAvatar(fileService.getPictureUrl(tempUser.getAvatar()));
+            followingUsers.add(tempUser);
+        }
+        return followingUsers;
     }
 }

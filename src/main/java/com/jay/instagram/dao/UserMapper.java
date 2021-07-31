@@ -13,4 +13,10 @@ public interface UserMapper {
     User getUserByUsername(String userName);
     boolean updateUser(User user);
     List<User> getRecentUsers();
+
+    void follow(Long userId, Long followerId);
+    void unFollow(Long userId,Long followerId);
+    Long findFollow(Long userId, Long followerId);
+    List<Long> findFollowers(Long userId);
+    List<Long> findFollowingUsers(Long userId);
 }
