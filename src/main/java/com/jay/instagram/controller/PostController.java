@@ -110,11 +110,10 @@ public class PostController {
         comment.setComment(text);
         comment.setCreatedAt(new Date());
         postService.addPostComment(comment);
-        log.info("[Comment] User: {} Text: {}", user.getUsername(), text);
-        Post post = postService.getPost(postId);
         user.setAvatar(fileService.getPictureUrl(user.getAvatar()));
-        post.setUser(user);
-        responseJson.put("data", post);
+        comment.setUser(user);
+        responseJson.put("data", comment);
+        log.info("[Comment] User: {} Text: {}", user.getUsername(), text);
         return responseJson;
     }
 }
