@@ -69,6 +69,8 @@ public class PostServiceImpl implements PostService {
             }
             cmt.setUser(whoMakeComment);
         }
+        post.setLikesCount((long) 1000000000);
+        post.setCommentsCount((long) comments.size());
         post.setComments(comments);
         post.setFiles(imageUrls);
         post.setTags(postMapper.getPostTags(postId));

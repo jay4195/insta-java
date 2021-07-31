@@ -22,4 +22,5 @@ public interface PostMapper {
 
     void addPostComment(Comment comment);
     List<Comment> getPostComments(Long postId);
+    Long getCommentsCount(Long postId);
 }

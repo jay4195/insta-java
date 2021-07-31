@@ -84,6 +84,9 @@ public class PostController {
     @ResponseBody
     public JSONObject createPost(@RequestBody Post post, HttpServletRequest httpServletRequest) {
         log.info("New Post Created! {}" , post.toString());
+        if (post.getCaption().length() > 150) {
+            post.setCaption(post.getCaption().substring(0, 150));
+        }
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User user = userService.getUserByEmail(tokenUserEmail);
         user.setAvatar(fileService.getPictureUrl(user.getAvatar()));
@@ -102,6 +105,9 @@ public class PostController {
                                @RequestBody JSONObject commentJson, HttpServletRequest httpServletRequest) {
         JSONObject responseJson = new JSONObject();
         String text = (String) commentJson.get("text");
+        if (text.length() > 150) {
+            text = text.substring(0, 150);
+        }
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User user = userService.getUserByEmail(tokenUserEmail);
         Comment comment = new Comment();
