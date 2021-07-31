@@ -61,4 +61,30 @@
     <delete id="deletePost">
         delete from post where id = #{id}
     </delete>
+
+    <select id = "findToggleLike" resultType="Long" >
+        select count(*) from post_likes where post_id = #{postId} and uid = #{uid};
+    </select>
+    <insert id = "toggleLike">
+        insert into post_likes(`post_id`,`uid`) values (#{postId}, #{uid});
+    </insert>
+    <delete id="toggleUnLike">
+        delete from post_likes where post_id = #{postId} and uid = #{uid};
+    </delete>
+    <select id="getPostLikeNumbers" resultType="Long">
+        select count(*) from post_likes where post_id = #{postId};
+    </select>
+
+    <select id = "findToggleSave" resultType="Long" >
+        select count(*) from post_saves where post_id = #{postId} and uid = #{uid};
+    </select>
+    <insert id = "toggleSave">
+        insert into post_saves(`post_id`,`uid`) values (#{postId}, #{uid});
+    </insert>
+    <delete id="toggleUnSave">
+        delete from post_saves where post_id = #{postId} and uid = #{uid};
+    </delete>
+    <select id="getAllSavePosts" resultType="Long">
+        select * from post_saves where uid = #{uid};
+    </select>
 </mapper>

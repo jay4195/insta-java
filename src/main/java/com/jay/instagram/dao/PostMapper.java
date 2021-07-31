@@ -23,4 +23,15 @@ public interface PostMapper {
     void addPostComment(Comment comment);
     List<Comment> getPostComments(Long postId);
     Long getCommentsCount(Long postId);
+
+
+    Long findToggleLike(Long postId, Long uid);
+    void toggleLike(Long postId, Long uid);
+    void toggleUnLike(Long postId, Long uid);
+    Long getPostLikeNumbers(Long postId);
+
+    Long findToggleSave(Long postId, Long uid);
+    void toggleSave(Long postId, Long uid);
+    void toggleUnSave(Long postId, Long uid);
+    List<Long> getAllSavePosts(Long uid);
 }

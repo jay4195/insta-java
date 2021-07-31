@@ -41,12 +41,15 @@ public class PostController {
     public JSONObject getPostInfo(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         JSONObject responseJson = new JSONObject();
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        User tokenUser = userService.getUserByEmail(tokenUserEmail);
         Post post = postService.getPost(id);
         if (post.getUser().getEmail().equals(tokenUserEmail)) {
             post.setMine(true);
         } else {
             post.setMine(false);
         }
+        post.setLiked(postService.likeStatus(id, tokenUser.getId()));
+        post.setSaved(postService.saveStatus(id, tokenUser.getId()));
         responseJson.put("data", post);
         return responseJson;
     }
@@ -120,6 +123,28 @@ public class PostController {
         comment.setUser(user);
         responseJson.put("data", comment);
         log.info("[Comment] User: {} Text: {}", user.getUsername(), text);
+        return responseJson;
+    }
+
+    @RequestMapping(value = "/{id}/toggleLike", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject toggleLike(@PathVariable(value = "id") Long postId, HttpServletRequest httpServletRequest) {
+        JSONObject responseJson = new JSONObject();
+        String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        User user = userService.getUserByEmail(tokenUserEmail);
+        postService.toggleLike(postId, user.getId());
+        responseJson.put("data", "ok!");
+        return responseJson;
+    }
+
+    @RequestMapping(value = "/{id}/toggleSave", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject toggleSave(@PathVariable(value = "id") Long postId, HttpServletRequest httpServletRequest) {
+        JSONObject responseJson = new JSONObject();
+        String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        User user = userService.getUserByEmail(tokenUserEmail);
+        postService.toggleSave(postId, user.getId());
+        responseJson.put("data", "ok!");
         return responseJson;
     }
 }

@@ -69,7 +69,7 @@ public class PostServiceImpl implements PostService {
             }
             cmt.setUser(whoMakeComment);
         }
-        post.setLikesCount((long) 1000000000);
+        post.setLikesCount(postMapper.getPostLikeNumbers(postId));
         post.setCommentsCount((long) comments.size());
         post.setComments(comments);
         post.setFiles(imageUrls);
@@ -114,6 +114,48 @@ public class PostServiceImpl implements PostService {
     @Override
     public void addPostComment(Comment comment) {
         postMapper.addPostComment(comment);
+    }
+
+    @Override
+    public void toggleLike(Long postId, Long uid) {
+        if (postMapper.findToggleLike(postId, uid) > 0) {
+            postMapper.toggleUnLike(postId, uid);
+            log.info("[Unlike] postId:{}", postId);
+        } else {
+            postMapper.toggleLike(postId, uid);
+            log.info("[Like] postId:{}", postId);
+        }
+    }
+
+    @Override
+    public boolean likeStatus(Long postId, Long uid) {
+        return postMapper.findToggleLike(postId, uid) > 0;
+    }
+
+    @Override
+    public void toggleSave(Long postId, Long uid) {
+        if (postMapper.findToggleSave(postId, uid) > 0) {
+            postMapper.toggleUnSave(postId, uid);
+            log.info("[UnSave] postId:{}", postId);
+        } else {
+            postMapper.toggleSave(postId, uid);
+            log.info("[Save] postId:{}", postId);
+        }
+    }
+
+    @Override
+    public boolean saveStatus(Long postId, Long uid) {
+        return postMapper.findToggleSave(postId, uid) > 0;
+    }
+
+    @Override
+    public List<Post> getSavedPosts(Long uid) {
+        List<Long> savedPostIds = postMapper.getAllSavePosts(uid);
+        List<Post> savedPosts = new LinkedList<>();
+        for (Long postId : savedPostIds) {
+            savedPosts.add(getPost(postId));
+        }
+        return savedPosts;
     }
 
     public List<Comment> getPostComments(Long postId) {

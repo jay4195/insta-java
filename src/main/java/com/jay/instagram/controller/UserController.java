@@ -62,7 +62,9 @@ public class UserController {
         }
         userSchema.setAvatar(fileService.getPictureUrl(user.getAvatar()));
         List<Post> posts = postService.getPostByUid(user.getId());
+        List<Post> savedPosts = postService.getSavedPosts(user.getId());
         userSchema.setPosts(posts);
+        userSchema.setSavedPosts(savedPosts);
         userSchema.setPostCount((long) posts.size());
         retJsonObj.put("data", userSchema);
         return retJsonObj;
@@ -79,12 +81,15 @@ public class UserController {
         log.info(postService.getRandomPosts().toString());
         List<Post> posts = postService.getRandomPosts();
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        User tokenUser = userService.getUserByEmail(tokenUserEmail);
         for (Post post : posts) {
             if (post.getUser().getEmail().equals(tokenUserEmail)) {
                 post.setMine(true);
             } else {
                 post.setMine(false);
             }
+            post.setLiked(postService.likeStatus(post.getId(), tokenUser.getId()));
+            post.setSaved(postService.saveStatus(post.getId(), tokenUser.getId()));
         }
         retJsonObj.put("data", posts);
         return retJsonObj;
