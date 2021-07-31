@@ -69,7 +69,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String getPictureUrl(String fileName) {
-        if (fileName.equals("")) {
+        if (fileName == null || fileName.equals("")) {
             return serverConfig.getImgSrcPath() + "default_avatar.jpg";
         } else {
             return serverConfig.getImgSrcPath() + fileName;
