@@ -8,7 +8,6 @@ import com.jay.instagram.service.FileService;
 import com.jay.instagram.service.PostService;
 import com.jay.instagram.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

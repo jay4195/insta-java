@@ -2,6 +2,10 @@
 
 ### 1.Updates
 
+#### [version 0.1.2]
+
+- fix profile follow bugs
+
 #### [version 0.1.1] 
 
 - token with 24 hours

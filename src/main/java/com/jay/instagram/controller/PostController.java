@@ -43,11 +43,7 @@ public class PostController {
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User tokenUser = userService.getUserByEmail(tokenUserEmail);
         Post post = postService.getPost(id);
-        if (post.getUser().getEmail().equals(tokenUserEmail)) {
-            post.setMine(true);
-        } else {
-            post.setMine(false);
-        }
+        post.setMine(post.getUser().getEmail().equals(tokenUserEmail));
         post.setLiked(postService.likeStatus(id, tokenUser.getId()));
         post.setSaved(postService.saveStatus(id, tokenUser.getId()));
         responseJson.put("data", post);

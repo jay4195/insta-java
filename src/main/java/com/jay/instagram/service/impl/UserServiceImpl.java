@@ -74,24 +74,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getFollowers(Long uid) {
         List<Long> followerList = userMapper.findFollowers(uid);
-        List<User> followers = new LinkedList<>();
-        for (Long id : followerList) {
-            User tempUser = userMapper.getUserById(id);
-            tempUser.setAvatar(fileService.getPictureUrl(tempUser.getAvatar()));
-            followers.add(tempUser);
-        }
-        return followers;
+        return getUsers(followerList);
     }
 
     @Override
     public List<User> getFollowingUsers(Long uid) {
         List<Long> followingList = userMapper.findFollowingUsers(uid);
-        List<User> followingUsers = new LinkedList<>();
-        for (Long id : followingList) {
+        return getUsers(followingList);
+    }
+
+    private List<User> getUsers(List<Long> userList) {
+        List<User> followers = new LinkedList<>();
+        for (Long id : userList) {
             User tempUser = userMapper.getUserById(id);
             tempUser.setAvatar(fileService.getPictureUrl(tempUser.getAvatar()));
-            followingUsers.add(tempUser);
+            followers.add(tempUser);
         }
-        return followingUsers;
+        return followers;
     }
 }

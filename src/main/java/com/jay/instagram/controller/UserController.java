@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Controller
@@ -44,34 +42,40 @@ public class UserController {
     @ResponseBody
     public JSONObject getUserInfo(@PathVariable("username") String username, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         JSONObject retJsonObj = new JSONObject();
-        User user = userService.getUserByUsername(username);
-        if (user == null) {
+        User profileUser = userService.getUserByUsername(username);
+        String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        User tokenUser = userService.getUserByEmail(tokenUserEmail);
+        if (profileUser == null) {
             retJsonObj.put("message", "no such user");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return retJsonObj;
         }
-        UserSchema userSchema = new UserSchema(user);
-        String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
-        if (tokenUserEmail.equals(user.getEmail())) {
+        UserSchema userSchema = new UserSchema(profileUser);
+        if (tokenUserEmail.equals(profileUser.getEmail())) {
             userSchema.setMe(true);
         } else {
             userSchema.setMe(false);
+            userSchema.setFollowingStatus(userService.followStatus(profileUser.getId(), tokenUser.getId()));
         }
-        userSchema.setAvatar(fileService.getPictureUrl(user.getAvatar()));
-        List<Post> posts = postService.getPostByUid(user.getId());
-        List<Post> savedPosts = postService.getSavedPosts(user.getId());
-        List<User> followers = userService.getFollowers(user.getId());
-        List<User> followings = userService.getFollowingUsers(user.getId());
+        userSchema.setAvatar(fileService.getPictureUrl(profileUser.getAvatar()));
+        List<Post> posts = postService.getPostByUid(profileUser.getId());
+        List<Post> savedPosts = postService.getSavedPosts(profileUser.getId());
+        List<User> followers = userService.getFollowers(profileUser.getId());
+        List<User> followings = userService.getFollowingUsers(profileUser.getId());
         List<UserSchema> followerSchema = new LinkedList<>();
         List<UserSchema> followingSchema = new LinkedList<>();
         for (User tempUser : followers) {
             UserSchema schema = new UserSchema(tempUser);
-            schema.setFollowingStatus(userService.followStatus(user.getId(), schema.getId()));
+            schema.setFollowingStatus(userService.followStatus(schema.getId(), tokenUser.getId()));
             followerSchema.add(schema);
         }
         for (User tempUser : followings) {
             UserSchema schema = new UserSchema(tempUser);
-            schema.setFollowingStatus(true);
+            if (userSchema.isMe()) {
+                schema.setFollowingStatus(true);
+            } else {
+                schema.setFollowingStatus(userService.followStatus(schema.getId(), tokenUser.getId()));
+            }
             followingSchema.add(schema);
         }
         userSchema.setPosts(posts);
@@ -98,11 +102,7 @@ public class UserController {
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User tokenUser = userService.getUserByEmail(tokenUserEmail);
         for (Post post : posts) {
-            if (post.getUser().getEmail().equals(tokenUserEmail)) {
-                post.setMine(true);
-            } else {
-                post.setMine(false);
-            }
+            post.setMine(post.getUser().getEmail().equals(tokenUserEmail));
             post.setLiked(postService.likeStatus(post.getId(), tokenUser.getId()));
             post.setSaved(postService.saveStatus(post.getId(), tokenUser.getId()));
         }
@@ -137,26 +137,26 @@ public class UserController {
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     public JSONObject editProfile(@Valid @RequestBody User user, HttpServletResponse response) {
-        JSONObject reponseJson = new JSONObject();
+        JSONObject responseJson = new JSONObject();
         user.setAvatar(fileService.getPictureFileName(user.getAvatar()));
         User checkUserByName = userService.getUserByUsername(user.getUsername());
         //通过email来判断该user是否和当前user一致
         if (checkUserByName != null && !checkUserByName.getEmail().equals(user.getEmail())) {
-            reponseJson.put("message", String.format("account with username:%s already exists!",
+            responseJson.put("message", String.format("account with username:%s already exists!",
                     user.getUsername()));
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return reponseJson;
+            return responseJson;
         }
         if(!userService.updateUser(user)) {
-            reponseJson.put("message", String.format("update account:%s failed!",
+            responseJson.put("message", String.format("update account:%s failed!",
                     user.getEmail()));
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return reponseJson;
+            return responseJson;
         }
         user.setAvatar(fileService.getPictureUrl(user.getAvatar()));
-        log.info("[UPDATE USER]: {}" ,user.toString());
-        reponseJson.put("data", user);
-        return reponseJson;
+        log.info("[UPDATE USER]: {}" , user);
+        responseJson.put("data", user);
+        return responseJson;
     }
 
     /** follow controller */
@@ -166,18 +166,18 @@ public class UserController {
     public JSONObject follow(@PathVariable("userId") Long userId,
                              HttpServletRequest httpServletRequest,
                              HttpServletResponse response) {
-        JSONObject reponseJson = new JSONObject();
+        JSONObject responseJson = new JSONObject();
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User currentUser = userService.getUserByEmail(tokenUserEmail);
-        if (currentUser.getId() == userId) {
-            reponseJson.put("message", "You can't follow youself!");
+        if (currentUser.getId().equals(userId)) {
+            responseJson.put("message", "You can't follow yourself!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return reponseJson;
+            return responseJson;
         } else {
             userService.followUser(userId, currentUser.getId());
         }
-        reponseJson.put("message", "ok!");
-        return reponseJson;
+        responseJson.put("message", "ok!");
+        return responseJson;
     }
 
     @RequestMapping(value = "/{userId}/unfollow",
@@ -186,18 +186,18 @@ public class UserController {
     public JSONObject unFollow(@PathVariable("userId") Long userId,
                              HttpServletRequest httpServletRequest,
                              HttpServletResponse response) {
-        JSONObject reponseJson = new JSONObject();
+        JSONObject responseJson = new JSONObject();
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User currentUser = userService.getUserByEmail(tokenUserEmail);
-        if (currentUser.getId() == userId) {
-            reponseJson.put("message", "You can't follow youself!");
+        if (currentUser.getId().equals(userId)) {
+            responseJson.put("message", "You can't follow yourself!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return reponseJson;
+            return responseJson;
         } else {
             userService.unFollowUser(userId, currentUser.getId());
         }
-        reponseJson.put("message", "ok!");
-        return reponseJson;
+        responseJson.put("message", "ok!");
+        return responseJson;
     }
 
 }

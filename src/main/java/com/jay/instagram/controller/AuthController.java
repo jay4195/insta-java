@@ -1,7 +1,6 @@
 package com.jay.instagram.controller;
 
 import com.jay.instagram.bean.User;
-import com.jay.instagram.config.ServerConfig;
 import com.jay.instagram.service.FileService;
 import com.jay.instagram.service.TokenService;
 import com.jay.instagram.service.UserService;
@@ -38,7 +37,7 @@ public class AuthController {
         String password = loginParam.get("password");
         User checkUserExist = userService.getUserByEmail(email);
         if (checkUserExist == null) {
-            responseMap.put("message", "The email is not yet registered to an accout");
+            responseMap.put("message", "The email is not yet registered to an account!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return responseMap;
         }
@@ -85,7 +84,7 @@ public class AuthController {
             return responseMap;
         }
         newUser.setCreatedAt(new Date());
-        log.info("[signUp] " + newUser.toString());
+        log.info("[signUp] " + newUser);
         userService.addUser(newUser);
         String token = tokenService.createToken(newUser.getEmail(), newUser.getPassword());
         responseMap.put("token", token);
