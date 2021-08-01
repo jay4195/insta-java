@@ -1,6 +1,14 @@
 # Instagram Backend with Spring Boot
 
-1. application.yaml
+### 1.Updates
+
+#### [version 0.1.1] 
+
+- token with 24 hours
+- fix followers bug at profile page
+- add comment captions and hashtags
+
+### 2.Configs
 
 ```yaml
 instagram:
@@ -31,7 +39,7 @@ mybatis:
     map-underscore-to-camel-case: true
 ```
 
-2. mysql docker
+
 
 ```shell
 docker pull mysql:latest
