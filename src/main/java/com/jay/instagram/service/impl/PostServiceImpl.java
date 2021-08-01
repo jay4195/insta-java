@@ -18,6 +18,7 @@ import java.util.*;
 @Service
 public class PostServiceImpl implements PostService {
     private static final int hashtagLengthLimit = 50;
+    private static final int captionLengthLimit = 150;
     @Autowired
     PostMapper postMapper;
     @Autowired
@@ -27,10 +28,31 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void createPost(Post post) {
+        //过滤不出来hashtag再过滤一次
+        String caption = post.getCaption();
+        List<String> hashTags = post.getTags();
+        List<String> captions = Arrays.asList(caption.split("\n"));
+        StringBuffer captionBuilder = new StringBuffer();
+        for (int i = 0; i < captions.size(); i++) {
+            if (captions.get(i).startsWith("#")) {
+                hashTags.add(captions.get(i));
+            } else {
+                if (i != captions.size() - 1) {
+                    captionBuilder.append(captions.get(i)).append(" ");
+                } else {
+                    captionBuilder.append(captions.get(i));
+                }
+            }
+        }
+        caption = captionBuilder.toString();
+        if (caption.length() > captionLengthLimit) {
+            caption = caption.substring(0, captionLengthLimit);
+        }
+        post.setCaption(caption);
         postMapper.addPost(post);
         Long postId = post.getId();
         List<String> imageUrls = post.getFiles();
-        List<String> hashTags = post.getTags();
+        hashTags = post.getTags();
         for (String url : imageUrls) {
             postMapper.addPostImages(postId, fileService.getPictureFileName(url));
         }

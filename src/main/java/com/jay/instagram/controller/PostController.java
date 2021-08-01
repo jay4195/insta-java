@@ -90,9 +90,6 @@ public class PostController {
     @ResponseBody
     public JSONObject createPost(@RequestBody Post post, HttpServletRequest httpServletRequest) {
         log.info("New Post Created! {}" , post.toString());
-        if (post.getCaption().length() > 150) {
-            post.setCaption(post.getCaption().substring(0, 150));
-        }
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User user = userService.getUserByEmail(tokenUserEmail);
         user.setAvatar(fileService.getPictureUrl(user.getAvatar()));
