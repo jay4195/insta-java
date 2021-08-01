@@ -2,7 +2,6 @@ instagram:
   server:
     serverDirPath: D:\IDEA-workspace\Data\
     imgSrcPath: http://localhost:8080/upload/
-
 server:
   port: 8080
 
@@ -18,7 +17,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-      max-request-size: 10MB
+      max-request-size: 50MB
 
 mybatis:
   mapper-locations: classpath:mybatis/*.xml

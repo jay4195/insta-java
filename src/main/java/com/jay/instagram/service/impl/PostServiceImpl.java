@@ -17,6 +17,7 @@ import java.util.*;
 @Slf4j
 @Service
 public class PostServiceImpl implements PostService {
+    private static final int hashtagLengthLimit = 50;
     @Autowired
     PostMapper postMapper;
     @Autowired
@@ -34,8 +35,8 @@ public class PostServiceImpl implements PostService {
             postMapper.addPostImages(postId, fileService.getPictureFileName(url));
         }
         for (String tag : hashTags) {
-            if (tag.length() > 20) {
-                tag = tag.substring(0, 20);
+            if (tag.length() > hashtagLengthLimit) {
+                tag = tag.substring(0, hashtagLengthLimit);
             }
             postMapper.addPostTags(postId, tag);
         }

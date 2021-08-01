@@ -71,9 +71,12 @@ public class PostController {
 
     @RequestMapping(value = "/avatar/{fileName}",
             method = RequestMethod.DELETE)
-    public void deleteAvatar(@PathVariable String fileName) {
+    public JSONObject deleteAvatar(@PathVariable String fileName) {
+        JSONObject responseJson = new JSONObject();
         log.info("Delete avatar {}", fileName);
         fileService.deletePicture(fileName);
+        responseJson.put("data", "ok!");
+        return responseJson;
     }
 
     @RequestMapping(

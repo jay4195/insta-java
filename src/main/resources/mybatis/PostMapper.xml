@@ -38,7 +38,7 @@
         select hashtag from post_tags where post_id = #{postId}
     </select>
     <select id="getRandomPosts" resultType="Long">
-        select id from post order by RAND() LIMIT 10
+        select id from post order by RAND() LIMIT 12
     </select>
     <select id="getPostNumbers" resultType="Long">
         select count(*) from post where uid = #{uid}

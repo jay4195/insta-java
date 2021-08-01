@@ -153,7 +153,9 @@ public class UserController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return reponseJson;
         }
-        reponseJson.put("user", user);
+        user.setAvatar(fileService.getPictureUrl(user.getAvatar()));
+        log.info("[UPDATE USER]: {}" ,user.toString());
+        reponseJson.put("data", user);
         return reponseJson;
     }
 
