@@ -23,7 +23,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/instagram?serverTimezone=Asia/Shanghai
     username: root
-    password: ufo950327
+    password: xxxxxx
     driver-class-name: com.mysql.cj.jdbc.Driver
   jdbc:
     template:
