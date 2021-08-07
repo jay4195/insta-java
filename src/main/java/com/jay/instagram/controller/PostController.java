@@ -62,16 +62,22 @@ public class PostController {
             responseJson.put("message", "You Don't have the right to delete!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        log.info("delete post id: {}", id);
+        log.info("[Delete post] id: {} user email {}:", id, tokenUserEmail);
     }
 
     @RequestMapping(value = "/avatar/{fileName}",
             method = RequestMethod.DELETE)
-    public JSONObject deleteAvatar(@PathVariable String fileName) {
+    public JSONObject deleteAvatar(@PathVariable String fileName, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         JSONObject responseJson = new JSONObject();
-        log.info("Delete avatar {}", fileName);
-        fileService.deletePicture(fileName);
-        responseJson.put("data", "ok!");
+        String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
+        if (fileService.deletePicture(fileName)) {
+            log.info("[Delete Avatar]: {} user email {}:", fileName, tokenUserEmail);
+            responseJson.put("data", "ok!");
+        } else {
+            responseJson.put("message", "Delete Avatar Failed!");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        log.info("[Delete Avatar Failed!]: {} user email {}:", fileName, tokenUserEmail);
         return responseJson;
     }
 

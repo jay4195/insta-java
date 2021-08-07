@@ -37,6 +37,8 @@ public class UserController {
      * @param username 用户id
      * @return {"data" : UserSchema}
      */
+
+
     @RequestMapping(value = "/{username}",
             method = RequestMethod.GET)
     @ResponseBody
@@ -97,7 +99,6 @@ public class UserController {
     @ResponseBody
     public JSONObject feed(HttpServletRequest httpServletRequest) {
         JSONObject retJsonObj = new JSONObject();
-        //log.info(postService.getRandomPosts().toString());
         List<Post> posts = postService.getRandomPosts();
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User tokenUser = userService.getUserByEmail(tokenUserEmail);
@@ -127,7 +128,7 @@ public class UserController {
                 UserSchema userSchema = new UserSchema(user);
                 userSchema.setFollowingStatus(userService.followStatus(user.getId(), tokenUser.getId()));
                 cleanedFeedList.add(userSchema);
-                log.info("Feed User Id: {}", user.getId());
+//                log.info("Feed User Id: {}", user.getId());
             }
         }
         retJsonObj.put("data", cleanedFeedList);

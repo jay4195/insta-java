@@ -2,6 +2,10 @@
 
 ### 1.Updates
 
+#### [version 0.1.3]
+
+- Direct Message Function Add
+
 #### [version 0.1.2]
 
 - fix profile follow bugs
