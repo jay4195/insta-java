@@ -7,10 +7,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -44,8 +41,8 @@ public class RedisConfig {
                         .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
                         // 设置value 为自动转Json的Object
                         .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getValueSerializer()))
-                        // 不缓存null
-                        .disableCachingNullValues()
+//                        // 不缓存null
+//                        .disableCachingNullValues()
                         // 缓存数据保存1小时
                         .entryTtl(Duration.ofHours(1));
 
@@ -71,4 +68,5 @@ public class RedisConfig {
     private RedisSerializer<Object> valueSerializer() {
         return new GenericJackson2JsonRedisSerializer();
     }
+
 }
