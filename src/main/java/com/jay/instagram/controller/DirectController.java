@@ -51,7 +51,7 @@ public class DirectController {
                 contactList.add(temp);
             }
         }
-        log.info(contactList.toString());
+        log.info("TokenUser: {}, ContactList: {}",tokenUser.getUsername(), contactList.toString());
         responseJson.put("data", contactList);
         return responseJson;
     }
@@ -135,7 +135,6 @@ public class DirectController {
                                      @RequestBody JSONObject msg,
                                      HttpServletRequest httpServletRequest) {
         JSONObject responseJson = new JSONObject();
-        log.info("{}", msg);
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User tokenUser = userService.getUserByEmail(tokenUserEmail);
         User userChatWith = null;
@@ -147,13 +146,14 @@ public class DirectController {
         }
         tokenUser.setAvatar(fileService.getPictureUrl(tokenUser.getAvatar()));
         userChatWith.setAvatar(fileService.getPictureUrl(userChatWith.getAvatar()));
-        log.info("[token user]:{} [chatWith]:{}", tokenUser.getUsername(), userChatWith.getUsername());
         Message newMessage = new Message();
         newMessage.setSender(tokenUser);
         newMessage.setReceiver(userChatWith);
         newMessage.setText((String) msg.get("text"));
         newMessage.setCreatedAt(new Date());
         messageService.addMessage(newMessage);
+        log.info("[New Message]: sender: {}, receiver: {}, msg: {}, timestamp: {}", newMessage.getSender().getUsername(), newMessage.getReceiver().getUsername(),
+                newMessage.getText(), newMessage.getCreatedAt());
         List<Message> messageList = messageService.getMessage(tokenUser, userChatWith);
         for (Message msgtemp : messageList) {
             if (msgtemp.getSender().getId().equals(tokenUser.getId())) {
