@@ -7,7 +7,9 @@ import com.jay.instagram.service.UserService;
 import com.jay.instagram.util.CryptoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
@@ -56,11 +58,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = "cache_user", key="'user_' + #userName")
     public User getUserByUsername(String userName) {
         return userMapper.getUserByUsername(userName);
     }
 
     @Override
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "cache_user", key="'user_' + #user.id"),
+            @CacheEvict(cacheNames = "cache_user", key="'user_' + #user.email"),
+            @CacheEvict(cacheNames = "cache_user", key="'user_' + #user.username")
+    })
     public boolean updateUser(User user) {
         return userMapper.updateUser(user);
     }

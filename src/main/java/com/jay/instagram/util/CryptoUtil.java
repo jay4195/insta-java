@@ -96,12 +96,17 @@ public class CryptoUtil {
     }
 
     public static void main(String[] args) {
-        String a = "123456";
+        String[] passwordList = {"950327", "123456", "123456", "12345678",
+                "1q2w3e", "yuyue621", "Nxaf1.cz" };
 //        String key = "yang测试";
-        System.out.println(a);
-        String m = encode(a);
-        System.out.println(m);
-        String n = decode(m);
-        System.out.println(n);
+//        System.out.println(a);
+//        String m = encode(a);
+//        System.out.println(m);
+//        String n = decode(m);
+//        System.out.println(n);
+        for (String pwd : passwordList) {
+            System.out.println(String.format("password: %s encode: %s", pwd, encode(pwd)));
+        }
+
     }
 }
