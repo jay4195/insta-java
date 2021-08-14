@@ -15,11 +15,11 @@ class InstagramApplicationTests {
     @Autowired
     RedisTemplate redisTemplate;
 
-    @Test
-    public void test1() {
-        stringRedisTemplate.opsForValue().append("StringKey", "字符串数值");
-        System.out.println(stringRedisTemplate.opsForValue().get("StringKey"));
-    }
+//    @Test
+//    public void test1() {
+//        stringRedisTemplate.opsForValue().append("StringKey", "字符串数值");
+//        System.out.println(stringRedisTemplate.opsForValue().get("StringKey"));
+//    }
 
     @Test
     void contextLoads() {

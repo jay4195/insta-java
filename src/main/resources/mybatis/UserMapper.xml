@@ -8,14 +8,20 @@
         insert into user(`username`,`password`,`fullname`,`email`,`createdAt`)
                     values (#{username}, #{password},#{fullname},#{email}, #{createdAt})
     </insert>
+    <select id = "getPasswordById" resultType="string" >
+        select `password` from user where id = #{id}
+    </select>
+    <select id = "getPasswordByEmail" resultType="string" >
+        select `password` from user where email = #{email}
+    </select>
     <select id = "getUserById" resultType="com.jay.instagram.bean.User" >
-        select * from user where id = #{id}
+        select `username`,`fullname`,`email`,`createdAt` from user where id = #{id}
     </select>
     <select id = "getUserByEmail" resultType="com.jay.instagram.bean.User" >
-        select * from user where email = #{email}
+        select `username`,`fullname`,`email`,`createdAt` from user where email = #{email}
     </select>
     <select id = "getUserByUsername" resultType="com.jay.instagram.bean.User" >
-        select * from user where username = #{userName}
+        select `username`,`fullname`,`email`,`createdAt` from user where username = #{userName}
     </select>
     <update id = "updateUser" >
         update user set username = #{username}, fullname = #{fullname}, avatar = #{avatar},

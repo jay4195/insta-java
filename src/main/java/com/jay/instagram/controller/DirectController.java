@@ -44,14 +44,16 @@ public class DirectController {
             userIdList.add(msg.getReceiver().getId());
         }
         List<User> contactList = new ArrayList<>();
+        List<String> contactListName = new ArrayList<>();
         for (Long id : userIdList) {
             if (!id.equals(tokenUser.getId())) {
                 User temp = userService.getUserById(id);
                 temp.setAvatar(fileService.getPictureUrl(temp.getAvatar()));
                 contactList.add(temp);
+                contactListName.add(temp.getUsername());
             }
         }
-        log.info("TokenUser: {}, ContactList: {}",tokenUser.getUsername(), contactList.toString());
+        log.info("TokenUser: {}, ContactList: {}",tokenUser.getUsername(), contactListName);
         responseJson.put("data", contactList);
         return responseJson;
     }
@@ -85,7 +87,6 @@ public class DirectController {
             msg.setReceiver(tokenUser);
             msg.setSenderIsMe(true);
         }
-        log.info(messageList.toString());
         responseJson.put("data", messageList);
         return responseJson;
     }

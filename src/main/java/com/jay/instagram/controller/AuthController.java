@@ -35,13 +35,15 @@ public class AuthController {
         Map<String, String> responseMap = new HashMap<>();
         String email = loginParam.get("email");
         String password = loginParam.get("password");
+        log.info("password: {}", password);
         User checkUserExist = userService.getUserByEmail(email);
         if (checkUserExist == null) {
             responseMap.put("message", "The email is not yet registered to an account!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return responseMap;
         }
-        if (!checkUserExist.getPassword().equals(password)) {
+
+        if (!userService.getPasswordByEmail(checkUserExist.getEmail()).equals(password)) {
             responseMap.put("message", "wrong password");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return responseMap;

@@ -4,6 +4,7 @@ import com.jay.instagram.bean.User;
 import com.jay.instagram.dao.UserMapper;
 import com.jay.instagram.service.FileService;
 import com.jay.instagram.service.UserService;
+import com.jay.instagram.util.CryptoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,7 +26,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(User user) {
+        // encode password
+        user.setPassword(CryptoUtil.encode(user.getPassword()));
         userMapper.addUser(user);
+    }
+
+    @Override
+    public String getPasswordById(Long id) {
+        // decode password
+        return CryptoUtil.decode(userMapper.getPasswordById(id));
+    }
+
+    @Override
+    public String getPasswordByEmail(String email) {
+        // decode password
+        return CryptoUtil.decode(userMapper.getPasswordByEmail(email));
     }
 
     @Override
