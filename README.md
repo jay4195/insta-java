@@ -4,7 +4,7 @@
 
 #### [version 0.1.3]
 
-- Direct Message Function Add
+- Direct Message Controller Add
 
 #### [version 0.1.2]
 

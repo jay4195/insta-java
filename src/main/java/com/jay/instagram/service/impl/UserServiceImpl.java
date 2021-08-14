@@ -6,6 +6,8 @@ import com.jay.instagram.service.FileService;
 import com.jay.instagram.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@EnableCaching
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
@@ -26,11 +29,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = "cache_user", key="'user_' + #id")
     public User getUserById(Long id) {
         return userMapper.getUserById(id);
     }
 
     @Override
+    @Cacheable(cacheNames = "cache_user", key="'user_' + #email")
     public User getUserByEmail(String email) {
         return userMapper.getUserByEmail(email);
     }

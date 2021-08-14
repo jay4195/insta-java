@@ -108,8 +108,8 @@ public class DirectController {
         tokenUser.setAvatar(fileService.getPictureUrl(tokenUser.getAvatar()));
         userChatWith.setAvatar(fileService.getPictureUrl(userChatWith.getAvatar()));
 
+//        log.warn("tokenUser: {} userChatWith: {}", tokenUser.getUsername(), userChatWith.getUsername());
         List<Message> messageList = messageService.getMessage(tokenUser, userChatWith);
-
         for (Message msg : messageList) {
             if (msg.getSender().getId().equals(tokenUser.getId())) {
                 msg.setSender(tokenUser);
@@ -123,7 +123,7 @@ public class DirectController {
             }
             msg.setSenderIsMe(msg.getSender().getId().equals(tokenUser.getId()));
         }
-        log.info("{}", messageList);
+//        log.info("[MESSAGE] user: {} msgNumber: {}",tokenUser.getUsername(), messageList.size());
         responseJson.put("data", messageList);
         return responseJson;
     }
@@ -147,7 +147,7 @@ public class DirectController {
         }
         tokenUser.setAvatar(fileService.getPictureUrl(tokenUser.getAvatar()));
         userChatWith.setAvatar(fileService.getPictureUrl(userChatWith.getAvatar()));
-        log.info("token user{} chatWith {}", tokenUser.getUsername(), userChatWith.getUsername());
+        log.info("[token user]:{} [chatWith]:{}", tokenUser.getUsername(), userChatWith.getUsername());
         Message newMessage = new Message();
         newMessage.setSender(tokenUser);
         newMessage.setReceiver(userChatWith);
