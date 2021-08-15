@@ -23,18 +23,15 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(cacheNames = "cache_message", key="'user_' + #message.sender.id"),
-            @CacheEvict(cacheNames = "cache_message", key="'user_' + #message.receiver.id")
+            @CacheEvict(cacheNames = "cache_message", key = "'send_' + #message.sender.id + '_recv_' + #message.receiver.id"),
+            @CacheEvict(cacheNames = "cache_message", key = "'send_' + #message.receiver.id + '_recv_' + #message.sender.id")
     })
     public void addMessage(Message message) {
         messageMapper.addMessage(message);
     }
 
     @Override
-    @Caching(cacheable = {
-            @Cacheable(cacheNames = "cache_message", key="'user_' + #sender.id"),
-            @Cacheable(cacheNames = "cache_message", key="'user_' + #receiver.id")
-    })
+    @Cacheable(cacheNames = "cache_message", key="'send_' + #sender.id + '_recv_' + #receiver.id")
     public List<Message> getMessage(User sender, User receiver) {
         log.info("[Get Message From DB] sender: {} receiver: {}", sender.getUsername(), receiver.getUsername());
         List<Message> messageList = messageMapper.getMessage(sender, receiver);
