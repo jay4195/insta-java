@@ -38,15 +38,20 @@ public class PostController {
     @RequestMapping(value = "/{id}",
             method = RequestMethod.GET)
     @ResponseBody
-    public JSONObject getPostInfo(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+    public JSONObject getPostInfo(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         JSONObject responseJson = new JSONObject();
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User tokenUser = userService.getUserByEmail(tokenUserEmail);
         Post post = postService.getPost(id);
-        post.setMine(post.getUser().getEmail().equals(tokenUserEmail));
-        post.setLiked(postService.likeStatus(id, tokenUser.getId()));
-        post.setSaved(postService.saveStatus(id, tokenUser.getId()));
-        responseJson.put("data", post);
+        if (post != null) {
+            post.setMine(post.getUser().getEmail().equals(tokenUserEmail));
+            post.setLiked(postService.likeStatus(id, tokenUser.getId()));
+            post.setSaved(postService.saveStatus(id, tokenUser.getId()));
+            responseJson.put("data", post);
+        } else {
+            responseJson.put("message", "no such post:" + id);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
         return responseJson;
     }
 
@@ -62,7 +67,7 @@ public class PostController {
             responseJson.put("message", "You Don't have the right to delete!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
-        log.info("[Delete post] id: {} user email {}:", id, tokenUserEmail);
+        log.info("[Delete post] id: {} user-email: {}", id, tokenUserEmail);
     }
 
     @RequestMapping(value = "/avatar/{fileName}",

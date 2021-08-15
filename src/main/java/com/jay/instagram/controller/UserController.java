@@ -102,12 +102,16 @@ public class UserController {
         List<Post> posts = postService.getRandomPosts();
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         User tokenUser = userService.getUserByEmail(tokenUserEmail);
+        List<Post> retPosts = new LinkedList<>();
         for (Post post : posts) {
-            post.setMine(post.getUser().getEmail().equals(tokenUserEmail));
-            post.setLiked(postService.likeStatus(post.getId(), tokenUser.getId()));
-            post.setSaved(postService.saveStatus(post.getId(), tokenUser.getId()));
+            if (post != null) {
+                post.setMine(post.getUser().getEmail().equals(tokenUserEmail));
+                post.setLiked(postService.likeStatus(post.getId(), tokenUser.getId()));
+                post.setSaved(postService.saveStatus(post.getId(), tokenUser.getId()));
+                retPosts.add(post);
+            }
         }
-        retJsonObj.put("data", posts);
+        retJsonObj.put("data", retPosts);
         return retJsonObj;
     }
 

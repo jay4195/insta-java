@@ -17,7 +17,9 @@ import java.util.Date;
 @Slf4j
 @Service
 public class FileServiceImpl implements FileService {
-    private static final float quality = 0.85f;
+    private static final int compressLoopTimes = 5;
+    private static final int fileSize = 512;
+    private static final float quality = 0.9f;
     private static final int fileNameLength = 25;
     private static final String defaultAvatarName = "default_avatar.jpg";
     @Autowired
@@ -65,14 +67,43 @@ public class FileServiceImpl implements FileService {
             inputStream.read(bytes, 0, inputStream.available());
             String suffix = fileName.substring(fileName.lastIndexOf("."));
             if (!suffix.equals(".png")) {
-                ByteArrayOutputStream outputStream= new ByteArrayOutputStream(bytes.length);
-                Thumbnails.of(file).scale(1f).outputQuality(quality).toOutputStream(outputStream);
-                bytes = outputStream.toByteArray();
+//                ByteArrayInputStream input = new ByteArrayInputStream(bytes);
+//                ByteArrayOutputStream output = new ByteArrayOutputStream(bytes.length);
+//                Thumbnails.of(input).scale(1f).outputQuality(quality).toOutputStream(output);
+//                bytes = output.toByteArray();
+//                System.out.println(bytes.length);
+                bytes = compressLoop(bytes);
             }
             inputStream.close();
         } catch (Exception e) {
             log.error(e.getMessage());
             bytes = new byte[0];
+        }
+        return bytes;
+    }
+
+    /**
+     * 压缩循环
+     */
+    private byte[] compressLoop(byte[] bytes) throws IOException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(bytes.length);
+        float imageQuality = quality;
+        int loopTimes = compressLoopTimes;
+        while (bytes.length / 1000 > fileSize && loopTimes > 0) {
+            try {
+                Thumbnails.of(inputStream).scale(1f).outputQuality(imageQuality).toOutputStream(outputStream);
+            } catch (Exception e) {
+                log.error("[compressLoop] {}", e.getMessage());
+                inputStream.close();
+                outputStream.close();
+            }
+            bytes = outputStream.toByteArray();
+            inputStream = new ByteArrayInputStream(bytes);
+            outputStream = new ByteArrayOutputStream(bytes.length);
+            imageQuality *= imageQuality;
+            loopTimes--;
+//            System.out.println(bytes.length / 1000);
         }
         return bytes;
     }
