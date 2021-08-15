@@ -3,22 +3,21 @@ package com.jay.instagram.service.impl;
 import com.jay.instagram.config.ServerConfig;
 import com.jay.instagram.service.FileService;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Slf4j
 @Service
 public class FileServiceImpl implements FileService {
+    private static final float quality = 0.85f;
     private static final int fileNameLength = 25;
     private static final String defaultAvatarName = "default_avatar.jpg";
     @Autowired
@@ -56,9 +55,20 @@ public class FileServiceImpl implements FileService {
         File file = new File(path);
         byte[] bytes;
         try {
+            // original pictures
+//            FileInputStream inputStream = new FileInputStream(file);
+//            bytes = new byte[inputStream.available()];
+//            inputStream.read(bytes, 0, inputStream.available());
+//            inputStream.close();
             FileInputStream inputStream = new FileInputStream(file);
             bytes = new byte[inputStream.available()];
             inputStream.read(bytes, 0, inputStream.available());
+            String suffix = fileName.substring(fileName.lastIndexOf("."));
+            if (!suffix.equals(".png")) {
+                ByteArrayOutputStream outputStream= new ByteArrayOutputStream(bytes.length);
+                Thumbnails.of(file).scale(1f).outputQuality(quality).toOutputStream(outputStream);
+                bytes = outputStream.toByteArray();
+            }
             inputStream.close();
         } catch (Exception e) {
             log.error(e.getMessage());
