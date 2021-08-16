@@ -1,5 +1,6 @@
 package com.jay.instagram.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jay.instagram.bean.Comment;
 import com.jay.instagram.bean.Post;
@@ -10,6 +11,7 @@ import com.jay.instagram.service.TokenService;
 import com.jay.instagram.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,9 @@ public class PostController {
     TokenService tokenService;
     @Autowired
     PostService postService;
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
     /**
      * @param id post id
      * @return {"data" : UserSchema}
@@ -62,7 +67,8 @@ public class PostController {
         String tokenUserEmail = tokenService.getEmailFromToken(httpServletRequest);
         Post post = postService.getPost(id);
         if (post.getUser().getEmail().equals(tokenUserEmail)) {
-            postService.deletePost(id);
+            kafkaTemplate.send("delete-post", id.toString());
+//            postService.deletePost(id);
         } else {
             responseJson.put("message", "You Don't have the right to delete!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -104,8 +110,9 @@ public class PostController {
         post.setMine(true);
         post.setCreatedAt(new Date());
         JSONObject responseJson = new JSONObject();
-        postService.createPost(post);
+//        postService.createPost(post);
         responseJson.put("data", post);
+        kafkaTemplate.send("post", JSON.toJSON(post).toString());
         return responseJson;
     }
 
