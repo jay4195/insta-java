@@ -3,9 +3,20 @@ instagram:
     serverDirPath: D:\IDEA-workspace\Data\
     imgSrcPath: http://localhost:8080/upload/
 server:
-  port: 8080
+  port: 8000
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:7000/eureka/
 
 spring:
+  application:
+    name: instagram-search-provider
   datasource:
     url: jdbc:mysql://localhost:3306/instagram?serverTimezone=Asia/Shanghai
     username: root

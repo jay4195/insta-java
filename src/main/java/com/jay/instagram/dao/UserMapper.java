@@ -7,7 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
-
     void addUser(User user);
     String getPasswordById(Long id);
     String getPasswordByEmail(String email);

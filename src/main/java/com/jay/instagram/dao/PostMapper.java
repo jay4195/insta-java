@@ -2,6 +2,7 @@ package com.jay.instagram.dao;
 
 import com.jay.instagram.bean.Comment;
 import com.jay.instagram.bean.Post;
+import com.jay.instagram.bean.SearchSchema;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface PostMapper {
     List<Long> getRandomPosts();
     List<Long> getPostByUid(Long uid);
     Post getPost(Long postId);
+
+    List<SearchSchema> searchAllPost();
     List<String> getPostImages(Long postId);
     List<String> getPostTags(Long postId);
     Long getPostNumbers(Long uid);
