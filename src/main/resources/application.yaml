@@ -10,7 +10,7 @@ eureka:
     hostname: localhost
   client:
     registerWithEureka: true
-    fetchRegistry: false
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:7000/eureka/
 
