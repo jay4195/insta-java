@@ -1,4 +1,4 @@
-package com.jay.instagram.swagger;
+package com.jay.instagram.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
