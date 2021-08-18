@@ -16,17 +16,16 @@ import java.util.List;
 public class SearchProviderController {
     @Autowired
     SearchService searchService;
-
-    //TODO
-//    @RequestMapping (value = "/get-all-post",
-//            method = RequestMethod.GET)
-//    public List<SearchSchema> getAllPost() {
-//        return searchService.getAllPost();
-//    }
-
+    
     @RequestMapping (value = "/get-all-post",
             method = RequestMethod.GET)
-    public String getAllPost() {
-        return "searchService.getAllPost()";
+    public List<SearchSchema> getAllPost() {
+        return searchService.getAllPost();
     }
+
+//    @RequestMapping (value = "/get-all-post",
+//            method = RequestMethod.GET)
+//    public String getAllPost() {
+//        return "searchService.getAllPost()";
+//    }
 }
