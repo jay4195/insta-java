@@ -2,6 +2,11 @@
 
 ### 1.Updates
 
+#### [version 0.2.0]
+
+- Kafka Message Queue
+- Eureka Service Registry Center
+
 #### [version 0.1.3]
 
 - Direct Message Controller Add
