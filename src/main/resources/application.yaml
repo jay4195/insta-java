@@ -1,9 +1,10 @@
+server:
+  port: 8000
+
 instagram:
   server:
     serverDirPath: D:\IDEA-workspace\Data\
-    imgSrcPath: http://localhost:8080/upload/
-server:
-  port: 8000
+    imgSrcPath: http://localhost:${server.port}/upload/
 
 eureka:
   instance:

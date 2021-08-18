@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumer {
     @Autowired
     PostService postService;
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
     // 消费监听
     @KafkaListener(topics = {"post"})
     public void onPost(ConsumerRecord<?, ?> record){
@@ -22,6 +25,7 @@ public class KafkaConsumer {
         //System.out.println("简单消费："+record.topic()+"-"+record.partition()+"-"+record.value());
         Post post = JSON.parseObject((String) record.value(), Post.class);
         postService.createPost(post);
+        kafkaTemplate.send("post-after", JSON.toJSON(post).toString());
     }
 
     @KafkaListener(topics = {"delete-post"})
