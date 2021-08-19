@@ -4,6 +4,6 @@ import com.jay.instagram.bean.SearchSchema;
 
 import java.util.List;
 
-public interface SearchService {
+public interface DatabaseSearchService {
     List<SearchSchema> getAllPost();
 }

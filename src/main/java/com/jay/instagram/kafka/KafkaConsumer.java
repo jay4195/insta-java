@@ -16,9 +16,10 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumer {
     @Autowired
     PostService postService;
+
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
-    // 消费监听
+
     @KafkaListener(topics = {"post"})
     public void onPost(ConsumerRecord<?, ?> record){
         // 消费的哪个topic、partition的消息,打印出消息内容
@@ -31,6 +32,8 @@ public class KafkaConsumer {
     @KafkaListener(topics = {"delete-post"})
     public void onDeletePost(ConsumerRecord<?, ?> record){
         String value = (String) record.value();
+        Long id = Long.parseLong(value);
+        log.info("[Kafka Listener] Delete Post id {}", id);
         postService.deletePost(Long.parseLong(value));
     }
 }

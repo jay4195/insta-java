@@ -2,14 +2,14 @@ package com.jay.instagram.service.impl;
 
 import com.jay.instagram.bean.SearchSchema;
 import com.jay.instagram.dao.PostMapper;
-import com.jay.instagram.service.SearchService;
+import com.jay.instagram.service.DatabaseSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class SearchServiceImpl implements SearchService {
+public class DatabaseSearchServiceImpl implements DatabaseSearchService {
     @Autowired
     PostMapper postMapper;
 

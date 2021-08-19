@@ -17,7 +17,7 @@ eureka:
 
 spring:
   application:
-    name: instagram-search-provider
+    name: instagram-base-server
   datasource:
     url: jdbc:mysql://localhost:3306/instagram?serverTimezone=Asia/Shanghai
     username: root

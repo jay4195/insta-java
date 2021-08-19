@@ -1,7 +1,7 @@
 package com.jay.instagram.controller;
 
 import com.jay.instagram.bean.SearchSchema;
-import com.jay.instagram.service.SearchService;
+import com.jay.instagram.service.DatabaseSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +13,13 @@ import java.util.List;
 @RestController
 @EnableEurekaClient
 @RequestMapping("/search-schema")
-public class SearchProviderController {
+public class DatabaseSearchProviderController {
     @Autowired
-    SearchService searchService;
+    DatabaseSearchService databaseSearchService;
 
     @RequestMapping (value = "/get-all-post",
             method = RequestMethod.GET)
     public List<SearchSchema> getAllPost() {
-        return searchService.getAllPost();
+        return databaseSearchService.getAllPost();
     }
 }
