@@ -1,20 +1,21 @@
 package com.jay.instagram.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jay.instagram.bean.Post;
 import com.jay.instagram.service.PostService;
 import com.jay.instagram.service.SearchEngineService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/search")
+@CrossOrigin
+@Slf4j
 public class SearchServiceController {
     @Autowired
     SearchEngineService searchEngineService;
@@ -24,18 +25,21 @@ public class SearchServiceController {
 
     @RequestMapping(value = "/{query}",
             method = RequestMethod.GET)
-    List<Post> search(@PathVariable("query") String query) {
+    public JSONObject search(@PathVariable("query") String query, HttpServletResponse response) {
+        JSONObject jsonObject = new JSONObject();
+        log.info("[Search] {}", query);
         List<Post> postResults = new LinkedList<>();
         List<Long> postIds = searchEngineService.search(query);
         for (Long id : postIds) {
             postResults.add(postService.getPost(id));
         }
-        return postResults;
+        jsonObject.put("data", postResults);
+        return jsonObject;
     }
 
     @RequestMapping(value = "/index/{query}",
             method = RequestMethod.GET)
-    List<Long> searchIndexs(@PathVariable("query") String query) {
+    public List<Long> searchIndexs(@PathVariable("query") String query) {
         return searchEngineService.search(query);
     }
 }
