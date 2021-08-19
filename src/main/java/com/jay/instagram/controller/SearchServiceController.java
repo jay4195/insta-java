@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class SearchServiceController {
             method = RequestMethod.GET)
     public JSONObject search(@PathVariable("query") String query, HttpServletResponse response) {
         JSONObject jsonObject = new JSONObject();
+        Date startTime = new Date();
         log.info("[Search] {}", query);
         List<Post> postResults = new LinkedList<>();
         List<Long> postIds = searchEngineService.search(query);
@@ -34,6 +36,7 @@ public class SearchServiceController {
             postResults.add(postService.getPost(id));
         }
         jsonObject.put("data", postResults);
+        jsonObject.put("time", System.currentTimeMillis() - startTime.getTime());
         return jsonObject;
     }
 
