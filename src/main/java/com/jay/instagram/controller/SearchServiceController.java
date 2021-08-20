@@ -29,7 +29,6 @@ public class SearchServiceController {
     public JSONObject search(@PathVariable("query") String query, HttpServletResponse response) {
         JSONObject jsonObject = new JSONObject();
         Date startTime = new Date();
-        log.info("[Search] {}", query);
         List<Post> postResults = new LinkedList<>();
         List<Long> postIds = searchEngineService.search(query);
         for (Long id : postIds) {
@@ -37,6 +36,7 @@ public class SearchServiceController {
         }
         jsonObject.put("data", postResults);
         jsonObject.put("time", System.currentTimeMillis() - startTime.getTime());
+        log.info("[Search] query: {} cost-time: {}ms", query, System.currentTimeMillis() - startTime.getTime());
         return jsonObject;
     }
 
