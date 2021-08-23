@@ -15,6 +15,7 @@ public interface UserMapper {
     User getUserByEmail(String email);
     User getUserByUsername(String userName);
     boolean updateUser(User user);
+    boolean changePassword(User user);
     List<User> getRecentUsers();
 
     void follow(Long userId, Long followerId);

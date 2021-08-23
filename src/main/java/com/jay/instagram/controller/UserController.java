@@ -139,6 +139,13 @@ public class UserController {
         return retJsonObj;
     }
 
+
+    /**
+     * edit profile method
+     * @param user
+     * @param response
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT)
     @ResponseBody
     public JSONObject editProfile(@Valid @RequestBody User user, HttpServletResponse response) {
@@ -161,6 +168,38 @@ public class UserController {
         user.setAvatar(fileService.getPictureUrl(user.getAvatar()));
         log.info("[UPDATE USER]: {}" , user);
         responseJson.put("data", user);
+        return responseJson;
+    }
+
+    /**
+     * change password
+     * @param requestJson
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/password/change", method = RequestMethod.PUT)
+    @ResponseBody
+    public JSONObject changePassword(@RequestBody JSONObject requestJson,HttpServletRequest httpServletRequest, HttpServletResponse response) {
+        JSONObject responseJson = new JSONObject();
+        String oldPassword = (String) requestJson.get("oldPassword");
+        String newPassword = (String) requestJson.get("newPassword");
+        User currentUser = userService.getUserByEmail(tokenService.getEmailFromToken(httpServletRequest));
+        if (!userService.getPasswordByEmail(currentUser.getEmail()).equals(oldPassword)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            requestJson.put("message", "Wrong Password!");
+            return requestJson;
+        }
+        currentUser.setPassword(newPassword);
+        if(!userService.changePassword(currentUser)) {
+            responseJson.put("message", String.format("change password:%s failed!",
+                    currentUser.getEmail()));
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.error("Change password for {} failed!", currentUser.getUsername());
+            return responseJson;
+        }
+        responseJson.put("message", String.format("change password:%s done!",
+                currentUser.getEmail()));
+        log.info("Change password for {} done!", currentUser.getUsername());
         return responseJson;
     }
 

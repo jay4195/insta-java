@@ -69,8 +69,19 @@ public class UserServiceImpl implements UserService {
             @CacheEvict(cacheNames = "cache_user", key="'user_' + #user.email"),
             @CacheEvict(cacheNames = "cache_user", key="'user_' + #user.username")
     })
+
+    /**
+     * UserMapper不更改用户密码
+     */
     public boolean updateUser(User user) {
         return userMapper.updateUser(user);
+    }
+
+
+    @Override
+    public boolean changePassword(User user) {
+        user.setPassword(CryptoUtil.encode(user.getPassword()));
+        return userMapper.changePassword(user);
     }
 
     @Override

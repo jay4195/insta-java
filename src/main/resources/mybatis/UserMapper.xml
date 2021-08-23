@@ -28,6 +28,9 @@
                         website = #{website}, bio = #{bio}
                         where email = #{email}
     </update>
+    <update id = "changePassword" >
+        update user set password = #{password} where email = #{email}
+    </update>
     <select id = "getRecentUsers" resultType="com.jay.instagram.bean.User" >
         select * from user order by RAND() LIMIT 10
     </select>

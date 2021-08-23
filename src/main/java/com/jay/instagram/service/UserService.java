@@ -13,6 +13,7 @@ public interface UserService {
     User getUserByEmail(String email);
     User getUserByUsername(String userName);
     boolean updateUser(User user);
+    boolean changePassword(User user);
     List<User> feedUser();
 
     void followUser(Long uid, Long followerId);
