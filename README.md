@@ -2,6 +2,10 @@
 
 ### 1.Updates
 
+#### [version 0.2.1]
+
+- Change Password
+
 #### [version 0.2.0]
 
 - Kafka Message Queue

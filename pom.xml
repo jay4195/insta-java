@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.jay</groupId>
     <artifactId>instagram</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <name>instagram</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Instagram Clone Project</description>
     <properties>
         <java.version>11</java.version>
     </properties>
